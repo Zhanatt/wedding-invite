@@ -8,6 +8,7 @@ const CONFIG = {
   // Музыка играет через встроенный плеер YouTube (ничего не скачивается).
   // Пусто — берётся файл audio/theme.mp3, если он есть.
   youtubeId: 'Y7dBGjXtLT4', // JAX 02.14 — Өзгөчө күн (Official Audio)
+  youtubeStart: 7, // с какой секунды играть (и при повторе)
   weddingDate: '2026-10-17T16:00:00+06:00',
   calendar: { year: 2026, month: 10, mark: 17 },
   texts: {
@@ -98,17 +99,41 @@ function youtubeMusic(id) {
   box.innerHTML = '<div id="yt-player"></div>';
   document.body.appendChild(box);
 
+  const START = CONFIG.youtubeStart || 0;
+  const ready = () => player && player.playVideo;
+  const isOn = () => ready() && [YT.PlayerState.PLAYING, YT.PlayerState.BUFFERING].includes(player.getPlayerState());
+  // кнопка «играет» только когда реально слышно звук
+  const refresh = () => setPlaying(!!(isOn() && !player.isMuted()));
+
+  // Браузеры включают звук только по нажатию. Если музыка стартовала беззвучно
+  // (плеер не успел загрузиться к нажатию на конверт), звук включится от следующего касания.
+  const gestures = ['pointerup', 'touchend', 'keydown'];
+  function unlock() {
+    if (!ready() || !wantPlay || userMuted) return;
+    player.unMute();
+    if (!isOn()) player.playVideo();
+    setTimeout(() => { refresh(); if (isOn() && !player.isMuted()) gestures.forEach(g => removeEventListener(g, unlock, true)); }, 400);
+  }
+  const armUnlock = () => gestures.forEach(g => addEventListener(g, unlock, true));
+
+  function start() {
+    if (player.getCurrentTime() < START) player.seekTo(START, true);
+    player.playVideo();
+  }
+
   window.onYouTubeIframeAPIReady = () => {
     player = new YT.Player('yt-player', {
       width: 200, height: 200, videoId: id,
-      playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: id, playsinline: 1, disablekb: 1 },
+      playerVars: { autoplay: 0, controls: 0, start: START, playsinline: 1, disablekb: 1, rel: 0 },
       events: {
-        onReady: () => { player.setVolume(70); if (wantPlay && !userMuted) player.playVideo(); },
+        onReady: () => {
+          player.setVolume(70);
+          // нажатие уже было, а плеер только загрузился — без звука браузер не даст, включим звук по касанию
+          if (wantPlay && !userMuted) { player.mute(); start(); armUnlock(); }
+        },
         onStateChange: e => {
-          const on = e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING;
-          // заиграло без звука (браузер разрешил только так) — включаем звук
-          if (on && wantPlay && !userMuted && player.isMuted()) player.unMute();
-          setPlaying(on);
+          if (e.data === YT.PlayerState.ENDED && wantPlay) { player.seekTo(START, true); player.playVideo(); }
+          refresh();
         },
         onError: hideSound, // видео удалено или владелец запретил встраивание (101/150)
       },
@@ -122,15 +147,16 @@ function youtubeMusic(id) {
   return {
     play: () => {
       wantPlay = true;
-      if (!player || !player.playVideo) return; // запустится в onReady
+      if (!ready()) return; // запустится в onReady
       player.unMute();
-      player.playVideo();
-      // если браузер не дал стартовать со звуком — стартуем без звука, onStateChange включит звук
+      start();
       setTimeout(() => {
-        if (wantPlay && player.getPlayerState() === -1) { player.mute(); player.playVideo(); }
+        refresh();
+        // браузер не дал стартовать со звуком — играем беззвучно, звук включится по следующему касанию
+        if (wantPlay && !userMuted && (!isOn() || player.isMuted())) { player.mute(); start(); armUnlock(); }
       }, 1500);
     },
-    pause: () => { wantPlay = false; if (player && player.pauseVideo) player.pauseVideo(); setPlaying(false); },
+    pause: () => { wantPlay = false; if (ready()) player.pauseVideo(); setPlaying(false); },
     isPaused: () => soundBtn.dataset.playing !== 'true',
   };
 }
