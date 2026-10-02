@@ -12,8 +12,8 @@ const CONFIG = {
   // Файл audio/theme.mp3 включается прямо по нажатию на конверт (YouTube так не умеет).
   // Чтобы играл файл — положите его в audio/ и сделайте youtubeId: ''.
   audioStart: 7,
-  weddingDate: '2026-10-17T16:00:00+06:00',
-  calendar: { year: 2026, month: 10, mark: 17 },
+  weddingDate: '2026-10-25T16:00:00+06:00',
+  calendar: { year: 2026, month: 10, mark: 25 },
   texts: {
     sending: 'Жөнөтүлүүдө…',
     done: 'Рахмат! Жообуңуз кабыл алынды.',

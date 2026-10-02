@@ -52,7 +52,8 @@ img, svg { display: block; }
 .monogram { margin-top: 40px; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .monogram-letters { font-family: var(--font-display); font-weight: 500; font-size: 120px; line-height: .9; letter-spacing: -.02em; color: var(--burgundy); }
 .monogram-letters .amp { font-style: italic; font-weight: 400; font-size: 64px; margin: 0 6px; }
-.monogram-names { margin-top: 10px; font-family: var(--font-display); font-weight: 400; font-style: italic; font-size: 30px; }
+.monogram-names { margin-top: 10px; font-family: var(--font-display); font-weight: 400; font-style: italic; font-size: 34px; line-height: 1.1; }
+.monogram-sub { display: block; margin-top: 8px; font-family: var(--font-body); font-style: normal; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--burgundy); }
 
 .arch {
   margin-top: 32px; width: calc(100% - 64px); max-width: 360px; flex-grow: 1;
@@ -63,7 +64,7 @@ img, svg { display: block; }
   text-align: center; font-size: 15px; line-height: 1.7;
 }
 .arch-mark { width: 44px; height: 22px; }
-.arch .name { font-family: var(--font-display); font-style: italic; font-size: 24px; }
+.arch .name { font-family: var(--font-display); font-style: italic; font-size: 24px; white-space: nowrap; }
 .scroll-hint { margin-top: auto; padding-top: 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255, 245, 225, .85); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; }
 .scroll-hint svg { width: 16px; height: 16px; animation: nudge 2s ease-in-out infinite; }
 
@@ -184,6 +185,7 @@ img, svg { display: block; }
 .envelope:hover .seal, .envelope:focus-visible .seal { transform: translate(-50%, -50%) scale(1.06); }
 .envelope-bottom { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .envelope-names { font-family: var(--font-display); font-style: italic; font-size: 44px; line-height: 1; }
+.envelope-sub { margin-bottom: 6px; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); }
 .envelope-date { font-size: 13px; letter-spacing: .24em; color: var(--burgundy); }
 .envelope-hint {
   margin-top: 22px; min-height: 48px; padding: 0 30px; border-radius: 999px;
