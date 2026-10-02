@@ -76,7 +76,10 @@ function tryPlay() {
     if (err && err.name === 'NotSupportedError') soundBtn.style.display = 'none';
   });
 }
-audio.addEventListener('error', () => { soundBtn.style.display = 'none'; });
+// ошибка загрузки могла случиться ещё до запуска скрипта — проверяем и сейчас, и потом
+const hideSound = () => { soundBtn.style.display = 'none'; };
+if (audio.error) hideSound();
+audio.addEventListener('error', hideSound);
 soundBtn.addEventListener('click', e => {
   e.stopPropagation();
   if (audio.paused) { userMuted = false; tryPlay(); }
