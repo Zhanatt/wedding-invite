@@ -264,22 +264,33 @@ soundBtn.addEventListener('click', e => {
   if (!arch || !perchLine) return;
 
   const flower = (x, y, c) => `<g class="bird-flower">${[0, 72, 144, 216, 288].map(a => {
-    const r = a * Math.PI / 180; return `<circle cx="${(x + Math.cos(r) * 2.3).toFixed(2)}" cy="${(y + Math.sin(r) * 2.3).toFixed(2)}" r="2" fill="${c}"/>`;
-  }).join('')}<circle cx="${x}" cy="${y}" r="1.3" fill="#d9a441"/></g>`;
+    const r = a * Math.PI / 180; return `<circle cx="${(x + Math.cos(r) * 2.7).toFixed(2)}" cy="${(y + Math.sin(r) * 2.7).toFixed(2)}" r="2.4" fill="${c}"/>`;
+  }).join('')}<circle cx="${x}" cy="${y}" r="1.5" fill="#d9a441"/></g>`;
   const CROWN = `<g class="bird-crown">
-    <ellipse cx="67" cy="15.5" rx="3" ry="1.4" transform="rotate(-35 67 15.5)" fill="#6f8a5c"/>
-    <ellipse cx="80.5" cy="14.5" rx="3" ry="1.4" transform="rotate(30 80.5 14.5)" fill="#6f8a5c"/>
-    ${flower(63, 19, '#f2b8c6')}${flower(70, 13.5, '#fff5e1')}${flower(77.5, 12.5, '#f2b8c6')}${flower(84, 17.5, '#fff5e1')}
+    <ellipse cx="62" cy="15" rx="3.4" ry="1.6" transform="rotate(-40 62 15)" fill="#6f8a5c"/>
+    <ellipse cx="80" cy="13" rx="3.4" ry="1.6" transform="rotate(35 80 13)" fill="#6f8a5c"/>
+    ${flower(58, 20, '#f2b8c6')}${flower(65, 13.5, '#fff5e1')}${flower(73, 11, '#f2b8c6')}${flower(81, 14.5, '#fff5e1')}
   </g>`;
-  const BOW = `<g class="bird-bow"><path d="M73 33l6 4-6 4zM85 33l-6 4 6 4z" fill="#141414"/><circle cx="79" cy="37" r="1.8" fill="#141414"/></g>`;
+  const BOW = `<g class="bird-bow"><path d="M69 41.5l7 4.5-7 4.5zM83 41.5l-7 4.5 7 4.5z" fill="#fff"/><circle cx="76" cy="46" r="2.1" fill="#fff"/></g>`;
+  // пухлая птичка: тельце + голова + хвостик + крылышко; outline — кремовый контур вокруг всего силуэта
+  const shapes = cls => `<g class="${cls}">
+    <path class="bird-tail" d="M26 42C16 40 9 35 4 31c2 9 5 17 10 22 4 3 10 3 13 1z"/>
+    <ellipse cx="48" cy="48" rx="28" ry="21"/>
+    <circle cx="70" cy="30" r="16"/>
+    <path class="bird-wing" d="M55 43C47 34 31 34 23 44c7 11 23 13 32-1z"/>
+  </g>`;
   const svg = extra => `<svg viewBox="0 0 100 80" aria-hidden="true">
-    <g class="bird-legs"><path d="M46 62l-2 10M55 62l0 10"/></g>
-    <path class="bird-body" d="M18 52C26 38 44 32 58 34 58 22 65 16 72 16c8 0 12 6 12 10l10-1-10 6c0 15-10 31-32 33-12 1-22-2-28-6L4 66l10-12z"/>
-    <circle class="bird-eye" cx="75" cy="23" r="1.7"/>
-    <path class="bird-wing" d="M50 42C42 26 32 15 14 9c7 12 12 26 22 36z"/>
+    ${shapes('bird-outline')}
+    <g class="bird-legs"><path d="M42 67l-2 10M53 67v10"/></g>
+    ${shapes('bird-fill')}
+    <path class="bird-beak" d="M84.5 27.5l8.5 3.2-8.5 3.3z"/>
+    <g class="bird-face">
+      <circle cx="75.5" cy="27" r="3.6" fill="#fff"/><circle cx="76.3" cy="27.4" r="2.4" fill="#2a0a10"/><circle cx="77.1" cy="26.4" r=".9" fill="#fff"/>
+      <ellipse cx="75" cy="36" rx="3.6" ry="2.2" fill="#f2a5b5" opacity=".85"/>
+    </g>
     ${extra}
   </svg>`;
-  const FOOT_X = 24.5, FOOT_Y = 34.5; // точка лапок в px при ширине птицы 48px
+  const W = 72, FOOT_X = W * .475, FOOT_Y = W * .77; // точка лапок в px
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // жених уже сидит на орнаменте внизу
@@ -308,10 +319,10 @@ soundBtn.addEventListener('click', e => {
     raf = 0;
     const t = (now - t0) / 1000;
     const a = docPos(arch), r = arch.offsetWidth / 2;
-    const home = { x: a.x + r * 1.48, y: a.y + r * .45 };
+    const home = { x: a.x + r * 1.42, y: a.y + r * .62 };
     trace.style.transform = `translate3d(${(home.x - FOOT_X).toFixed(1)}px, ${(home.y - FOOT_Y).toFixed(1)}px, 0)`;
     const pl = docPos(perchLine), pw = perchLine.offsetWidth;
-    const land = { x: pl.x + pw * 20 / 120, y: pl.y + pw * 9 / 120 };
+    const land = { x: pl.x + pw * 40 / 220, y: pl.y + pw * 9 / 220 };
     const pageW = page.offsetWidth, pageL = docPos(page).x, vh = innerHeight;
 
     let tx, ty, mode;

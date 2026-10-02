@@ -145,7 +145,8 @@ img, svg { display: block; }
 .timer-cell { border: 1px solid var(--line); border-radius: 16px; padding: 16px 0 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .timer-value { font-family: var(--font-display); font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; }
 .timer-unit { font-size: 11px; color: var(--muted); }
-.perch-line { position: relative; width: 120px; margin-top: 56px; }
+.perch-line { position: relative; width: 220px; margin-top: 76px; }
+.perch-line .ornament { width: 220px; }
 .perch-line .ornament { display: block; }
 .footer-names { font-family: var(--font-display); font-style: italic; font-size: 26px; }
 
@@ -208,41 +209,38 @@ img, svg { display: block; }
 /* ---------- птички ---------- */
 .bird {
   position: absolute; top: 0; left: 0; z-index: 5;
-  width: 48px; height: 38.4px; pointer-events: none;
-  transform-origin: 24.5px 34.5px; will-change: transform;
+  width: 72px; height: 57.6px; pointer-events: none;
+  transform-origin: 34.2px 55.44px; will-change: transform;
 }
-.bird-small { width: 40px; height: 32px; }
 .bird svg { width: 100%; height: 100%; overflow: visible; }
-.bird-body, .bird-wing {
-  fill: var(--burgundy);
-  /* кремовый контур — чтобы птицу было видно на бордовой арке; дома, внутри арки, его нет */
-  stroke: var(--cream); stroke-width: 2.6; stroke-linejoin: round; paint-order: stroke;
-  stroke-opacity: 1; transition: stroke-opacity .6s ease;
-}
-.bird.is-home .bird-body, .bird.is-home .bird-wing,
-.bird.is-landed .bird-body, .bird.is-landed .bird-wing { stroke-opacity: 0; }
-.bird-eye { fill: var(--cream); transition: opacity .6s; }
-.bird.is-home .bird-eye { opacity: 0; }
-.bird-legs { stroke: var(--burgundy); stroke-width: 2.4; stroke-linecap: round; fill: none; opacity: 0; transition: opacity .4s; }
+.bird-fill > * { fill: var(--burgundy); }
+.bird-fill > .bird-wing { fill: #63001a; }
+.bird-beak { fill: #e3a94b; }
+.bird-legs { stroke: #e3a94b; stroke-width: 2.6; stroke-linecap: round; fill: none; opacity: 0; transition: opacity .4s; }
 .bird.is-landed .bird-legs { opacity: 1; }
-.bird-wing { transform-box: view-box; transform-origin: 50px 42px; transform: rotate(-42deg); transition: transform .5s var(--ease-settle), stroke-opacity .6s ease; }
-.bird.is-flying .bird-wing { animation: wing .42s ease-in-out infinite alternate; }
-.bird-small.is-flying .bird-wing { animation-duration: .36s; animation-delay: -.2s; }
-@keyframes wing { from { transform: rotate(32deg); } to { transform: rotate(-92deg); } }
+/* кремовый контур — чтобы птицу было видно на бордовой арке; дома и на земле его нет */
+.bird-outline > * { fill: var(--cream); stroke: var(--cream); stroke-width: 5; stroke-linejoin: round; }
+.bird-outline { opacity: 1; transition: opacity .6s ease; }
+.bird.is-home .bird-outline, .bird.is-landed .bird-outline { opacity: 0; }
+/* дома, внутри арки, птица сливается с ней: прячем всё, кроме силуэта */
+.bird-beak, .bird-face, .bird-crown, .bird-fill > .bird-wing { transition: opacity .6s; }
+.bird-bride.is-home .bird-beak, .bird-bride.is-home .bird-face, .bird-bride.is-home .bird-crown { opacity: 0; }
+.bird-bride.is-home .bird-fill > .bird-wing { fill: var(--burgundy); }
+.bird-wing { transform-box: view-box; transform-origin: 55px 43px; transition: transform .5s var(--ease-settle); }
+.bird.is-flying .bird-wing { animation: wing .4s ease-in-out infinite alternate; }
+@keyframes wing { from { transform: rotate(68deg); } to { transform: rotate(-28deg); } }
 
-/* след: бежевый силуэт сидящей птицы на арке */
+/* след: бежевый силуэт невесты на арке */
 .bird-trace { z-index: 4; opacity: 0; transition: opacity 1.4s ease; }
 .bird-trace.is-shown { opacity: 1; }
-.bird-trace .bird-body, .bird-trace .bird-wing { fill: #f1dfbf; stroke: none; }
-.bird-trace .bird-eye { fill: var(--burgundy); opacity: .5; }
-.bird-trace .bird-crown * { fill: #f1dfbf; }
+.bird-trace .bird-outline, .bird-trace .bird-face, .bird-trace .bird-legs { display: none; }
+.bird-trace .bird-fill > *, .bird-trace .bird-beak, .bird-trace .bird-crown * { fill: #f1dfbf; }
+.bird-trace .bird-fill > .bird-wing { fill: #e6cfa6; }
 
 /* жених на орнаменте: смотрит влево, на невесту; изредка подпрыгивает */
-.bird-groom { position: absolute; z-index: 1; left: calc(100% * 100 / 120 - 24.5px); top: calc(100% / 2 - 34.5px); transform: scaleX(-1); animation: hop 5s ease-in-out infinite; }
-@keyframes hop { 0%, 86%, 100% { transform: scaleX(-1) translateY(0); } 90% { transform: scaleX(-1) translateY(-6px); } 94% { transform: scaleX(-1) translateY(0); } }
-.bird-crown, .bird-bow { transition: opacity .6s; }
-.bird-bride.is-home .bird-crown { opacity: 0; }
-.perch-heart { position: absolute; left: 50%; top: -30px; width: 18px; height: 18px; margin-left: -9px; fill: var(--burgundy); opacity: 0; transform: translateY(8px) scale(.3); transition: opacity .6s ease .3s, transform .9s var(--ease-settle) .3s; }
+.bird-groom { position: absolute; z-index: 1; left: calc(100% * 180 / 220 - 34.2px); top: calc(100% / 2 - 55.44px); transform: scaleX(-1); animation: hop 5s ease-in-out infinite; }
+@keyframes hop { 0%, 86%, 100% { transform: scaleX(-1) translateY(0); } 90% { transform: scaleX(-1) translateY(-7px); } 94% { transform: scaleX(-1) translateY(0); } }
+.perch-heart { position: absolute; left: 50%; top: -44px; width: 22px; height: 22px; margin-left: -11px; fill: var(--burgundy); opacity: 0; transform: translateY(8px) scale(.3); transition: opacity .6s ease .3s, transform .9s var(--ease-settle) .3s; }
 .perch-line.is-together .perch-heart { opacity: 1; transform: none; animation: beat 1.8s ease-in-out 1.2s infinite; }
 body.locked .bird-bride, body.locked .bird-trace { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .bird.is-flying .bird-wing, .bird-groom, .perch-line.is-together .perch-heart { animation: none; } }
