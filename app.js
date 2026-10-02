@@ -276,10 +276,10 @@ soundBtn.addEventListener('click', e => {
   // сложенное крыло ровно дополняет тело до исходного силуэта. outline — кремовый контур вокруг всего
   const shapes = cls => `<g class="${cls}">
     <path class="bird-body" d="M322 680C260 725 160 775 20 768C120 840 240 862 340 860C620 858 840 710 940 450C970 370 982 310 978 243C1040 200 1075 160 1100 121C1055 142 1010 154 965 160C1020 125 1055 80 1072 28C1020 60 970 78 918 90C860 28 800 18 758 18C630 18 530 120 532 240C532 255 535 272 538 287C500 410 420 570 322 680Z"/>
-    <path class="bird-wing" d="M538 287C360 275 210 200 100 57C60 120 55 180 67 230C80 280 115 320 157 344C120 340 85 330 55 313C52 390 85 450 122 490C150 510 185 525 223 529C190 536 160 538 129 532C150 600 200 660 270 678C290 680 305 680 322 680C420 570 500 410 538 287Z"/>
+    <path class="bird-wing" d="M538 287C360 275 210 200 100 57C60 120 55 180 67 230C80 280 115 320 157 344C120 340 85 330 55 313C52 390 85 450 122 490C150 510 185 525 223 529C190 536 160 538 129 532C150 600 200 660 270 678C290 680 305 680 322 680C480 700 650 500 538 287Z"/>
   </g>`;
   const svg = extra => `<svg viewBox="0 0 1120 880" aria-hidden="true">${shapes('bird-outline')}${shapes('bird-fill')}${extra}</svg>`;
-  const W = 84, FOOT_X = W * 380 / 1120, FOOT_Y = W * 860 / 1120; // точка, которой птица касается опоры (низ грудки), в px
+  const W = 60, FOOT_X = W * 380 / 1120, FOOT_Y = W * 860 / 1120; // точка, которой птица касается опоры (низ грудки), в px
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // жених уже сидит на орнаменте внизу
@@ -308,7 +308,7 @@ soundBtn.addEventListener('click', e => {
     raf = 0;
     const t = (now - t0) / 1000;
     const a = docPos(arch), r = arch.offsetWidth / 2;
-    const home = { x: a.x + r * 1.30, y: a.y + r * .66 };
+    const home = { x: a.x + r * 1.30, y: a.y + r * .5 };
     trace.style.transform = `translate3d(${(home.x - FOOT_X).toFixed(1)}px, ${(home.y - FOOT_Y).toFixed(1)}px, 0)`;
     const pl = docPos(perchLine), pw = perchLine.offsetWidth;
     const land = { x: pl.x + pw * 50 / 260, y: pl.y + pw * 9 / 260 };
