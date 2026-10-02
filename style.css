@@ -37,7 +37,7 @@ img, svg { display: block; }
 
 /* ---------- первый экран ---------- */
 .intro { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; align-items: center; }
-.topbar { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
+.topbar { width: 100%; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; padding: 20px 20px 0; text-align: center; }
 .sound-btn {
   width: 44px; height: 44px; border-radius: 50%;
   border: 1px solid var(--line); color: var(--burgundy);
@@ -63,7 +63,7 @@ img, svg { display: block; }
   display: flex; flex-direction: column; align-items: center; gap: 18px;
   text-align: center; font-size: 15px; line-height: 1.7;
 }
-.arch-mark { width: 44px; height: 22px; }
+.arch-mark { width: 84px; height: 42px; color: var(--cream); }
 .arch .name { font-family: var(--font-display); font-style: italic; font-size: 24px; white-space: nowrap; }
 .scroll-hint { margin-top: auto; padding-top: 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255, 245, 225, .85); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; }
 .scroll-hint svg { width: 16px; height: 16px; animation: nudge 2s ease-in-out infinite; }
@@ -250,3 +250,45 @@ img, svg { display: block; }
 .perch-line.is-together .perch-heart { opacity: 1; transform: none; animation: beat 1.8s ease-in-out 1.2s infinite; }
 body.locked .bird-bride, body.locked .bird-trace { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .bird.is-flying svg, .bird.is-flying .bird-wing, .bird-groom, .perch-line.is-together .perch-heart { animation: none; } }
+
+/* ---------- переключатель языка ---------- */
+.lang {
+  position: fixed; z-index: 120;
+  top: max(14px, env(safe-area-inset-top)); right: 14px;
+  display: flex; padding: 3px; gap: 2px;
+  border-radius: 999px; background: rgba(255, 245, 225, .92);
+  border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: opacity .4s, transform .4s var(--ease-settle);
+}
+.lang button {
+  min-width: 46px; min-height: 38px; padding: 0 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 500; letter-spacing: .12em; color: var(--burgundy); cursor: pointer;
+  transition: background .25s, color .25s;
+}
+.lang button[aria-pressed="true"] { background: var(--burgundy); color: var(--cream); }
+.lang button:focus-visible { outline: 2px solid var(--burgundy); outline-offset: 2px; }
+body.scrolled .lang { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+
+/* ---------- кыргызский орнамент: прорисовывается и раскрывается, как росток ---------- */
+.orn { display: block; color: var(--burgundy); }
+.orn svg { width: 100%; height: 100%; overflow: visible; }
+.orn-band { width: 210px; height: 31px; }
+.orn-horns { width: 72px; height: 36px; }
+.card .orn, .arch .orn { color: var(--cream); }
+.orn path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.5s cubic-bezier(.45, 0, .25, 1) calc(var(--d, 0s) + .25s); }
+.orn-grow { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(.55); opacity: .4; transition: transform 2s var(--ease-settle) .25s, opacity 1s ease .25s; }
+.is-in .orn path, .orn.is-in path { stroke-dashoffset: 0; }
+.is-in .orn-grow, .orn.is-in .orn-grow { transform: none; opacity: 1; }
+.form-head .orn { margin: 0 auto 6px; }
+.envelope-top .orn-band { width: 180px; height: 26px; }
+
+/* опора птичек: линии прорисовываются от центра, в центре — маленькие рога */
+.perch-line .ornament path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.4s cubic-bezier(.45, 0, .25, 1) .2s; }
+.is-in .perch-line .ornament path { stroke-dashoffset: 0; }
+.perch-horns { position: absolute; left: 50%; top: -11px; width: 40px; height: 20px; margin-left: -20px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orn path, .perch-line .ornament path { stroke-dashoffset: 0 !important; transition: none !important; }
+  .orn-grow { transform: none !important; opacity: 1 !important; transition: none !important; }
+}

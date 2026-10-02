@@ -23,19 +23,113 @@ const CONFIG = {
   },
 };
 
-const WEEKDAYS = ['Дш', 'Шш', 'Шр', 'Бш', 'Жм', 'Иш', 'Жк'];
+const WEEKDAYS = {
+  ky: ['Дш', 'Шш', 'Шр', 'Бш', 'Жм', 'Иш', 'Жк'],
+  ru: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+};
 
 /* ===== Календарь ===== */
-(function renderCalendar() {
+function renderCalendar(lang) {
   const { year, month, mark } = CONFIG.calendar;
   const first = (new Date(year, month - 1, 1).getDay() + 6) % 7; // понедельник = 0
   const days = new Date(year, month, 0).getDate();
-  let cells = WEEKDAYS.map(d => `<span class="cal-wd">${d}</span>`).join('');
+  let cells = WEEKDAYS[lang].map(d => `<span class="cal-wd">${d}</span>`).join('');
   for (let i = 0; i < first; i++) cells += '<span class="cal-day"></span>';
   for (let d = 1; d <= days; d++) {
     cells += d === mark ? `<span class="cal-day cal-day-mark">${d}</span>` : `<span class="cal-day">${d}</span>`;
   }
   document.getElementById('cal').innerHTML = cells;
+}
+
+/* ===== Кыргызский орнамент «кочкор мүйүз»: раскрывается, как росток ===== */
+(function ornaments() {
+  // мотив 120×60: стебель снизу, бутон, нижние и верхние завитки-рога; --d — задержка прорисовки
+  const motif = [
+    ['M60 58V30', 0],
+    ['M60 46C54 40 44 42 44 50 44 55 50 56 52 52', .35], ['M60 46C66 40 76 42 76 50 76 55 70 56 68 52', .35],
+    ['M60 30C60 14 46 6 34 10 22 14 20 30 30 36 38 41 46 34 42 27 39 22 32 24 33 29', .55],
+    ['M60 30C60 14 74 6 86 10 98 14 100 30 90 36 82 41 74 34 78 27 81 22 88 24 87 29', .55],
+    ['M60 30C56 24 56 18 60 12 64 18 64 24 60 30', 1],
+  ];
+  const paths = (list, sw) => list.map(([d, delay]) => `<path d="${d}" pathLength="1" stroke-width="${sw}" style="--d:${delay}s"/>`).join('');
+  const horns = `<svg viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g class="orn-grow">${paths(motif, 1.6)}</g></svg>`;
+  const band = `<svg viewBox="0 0 300 44" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    ${paths([['M112 31H20', .2], ['M188 31H280', .2],
+      ['M20 31c-7 0-10-7-5-9 4-1.5 6 3 3 4.5', 1.1], ['M280 31c7 0 10-7 5-9-4-1.5-6 3-3 4.5', 1.1],
+      ['M70 31c-1-5 1-9 5-10 0 5-2 8-5 10', 1.25], ['M230 31c1-5-1-9-5-10 0 5 2 8 5 10', 1.25]], 1.1)}
+    <g transform="translate(112.8 -5) scale(.62)"><g class="orn-grow">${paths(motif, 1.8)}</g></g>
+  </svg>`;
+  document.querySelectorAll('.orn-horns').forEach(el => { el.innerHTML = horns; });
+  document.querySelectorAll('.orn-band').forEach(el => { el.innerHTML = band; });
+  // на конверте раскрывается сразу после загрузки
+  setTimeout(() => document.querySelectorAll('.envelope .orn').forEach(el => el.classList.add('is-in')), 350);
+})();
+
+/* ===== Язык: кыргызский по умолчанию, русский по кнопке ===== */
+const RU = {
+  sound: 'Включить / выключить музыку',
+  kyz: 'Кыз узатуу', open: 'Нажмите, чтобы открыть',
+  greet: 'Уважаемые гости!',
+  invite: 'Приглашаем вас на кыз узатуу нашей дочери <span class="name">Сани-Рабиги</span>! Разделите с нами радость, дайте своё благословение и будьте нашими дорогими гостями!',
+  scroll: 'Листайте вниз',
+  dayTitle: 'День тоя', calNote: 'Воскресенье, в 16:00',
+  until: 'До тоя осталось', uD: 'дней', uH: 'часов', uM: 'минут', uS: 'секунд',
+  program: 'Программа тоя',
+  p1: 'Встреча гостей', p2: 'Начало тоя', p3: 'Праздничный дастархан', p4: 'Праздничная программа', p5: 'Завершение вечера',
+  venue: 'Место проведения', city: 'г. Токмок', map: 'Открыть карту',
+  wait: 'С нетерпением ждём вас!<br>С уважением, хозяева тоя:',
+  rsvp: 'Анкета', rsvpSub: 'Пожалуйста, подтвердите своё присутствие',
+  nameLabel: 'Ваше имя и фамилия', namePh: 'Например: Асель Мамбетова',
+  question: 'Если придёте с супругом(ой), укажите имена обоих',
+  a1: 'Обязательно приду', a2: 'Придём с супругом(ой)', a3: 'Не смогу прийти',
+  submit: 'Отправить ответ',
+};
+const TEXTS_RU = {
+  sending: 'Отправляем…',
+  done: 'Спасибо! Ваш ответ принят.',
+  error: 'Произошла ошибка. Попробуйте ещё раз.',
+  needName: 'Укажите ваше имя',
+  needAnswer: 'Выберите ответ',
+};
+let LANG = 'ky';
+const texts = () => (LANG === 'ru' ? TEXTS_RU : CONFIG.texts);
+
+function setLang(lang) {
+  LANG = lang === 'ru' ? 'ru' : 'ky';
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (el.dataset.ky === undefined) el.dataset.ky = el.innerHTML; // кыргызский текст — из самой разметки
+    el.innerHTML = LANG === 'ru' ? RU[el.dataset.i18n] ?? el.dataset.ky : el.dataset.ky;
+  });
+  document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+    el.dataset.i18nAttr.split(';').forEach(pair => {
+      const [attr, key] = pair.split(':');
+      const store = 'ky' + attr.replace(/-/g, '');
+      if (el.dataset[store] === undefined) el.dataset[store] = el.getAttribute(attr);
+      el.setAttribute(attr, LANG === 'ru' ? RU[key] ?? el.dataset[store] : el.dataset[store]);
+    });
+  });
+  document.querySelectorAll('.lang [data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+  renderCalendar(LANG);
+  const note = document.querySelector('.form-note');
+  if (note) note.textContent = '';
+  try { localStorage.setItem('lang', LANG); } catch (e) { /* приватный режим — просто не запоминаем */ }
+}
+(function langSwitch() {
+  const box = document.querySelector('.lang');
+  // нажатие на переключатель не должно запускать музыку и открывать конверт
+  ['pointerdown', 'touchstart'].forEach(ev => box.addEventListener(ev, e => e.stopPropagation(), { passive: true }));
+  box.addEventListener('click', e => {
+    const b = e.target.closest('[data-lang]');
+    if (b) { e.stopPropagation(); setLang(b.dataset.lang); }
+  });
+  let saved = 'ky';
+  try { saved = localStorage.getItem('lang') || 'ky'; } catch (e) { /* нет доступа к хранилищу */ }
+  setLang(saved);
+  // переключатель виден наверху страницы и прячется при прокрутке
+  const onScroll = () => document.body.classList.toggle('scrolled', scrollY > 80);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 })();
 
 /* ===== Появление элементов по скроллу ===== */
@@ -217,7 +311,6 @@ soundBtn.addEventListener('click', e => {
   const input = form.elements.name;
   const btn = form.querySelector('.form-submit');
   const note = form.querySelector('.form-note');
-  const T = CONFIG.texts;
 
   input.addEventListener('input', () => input.classList.remove('invalid'));
 
@@ -225,19 +318,19 @@ soundBtn.addEventListener('click', e => {
     e.preventDefault();
     const name = input.value.trim();
     const answer = (form.querySelector('input[name="answer"]:checked') || {}).value;
-    if (!name) { input.classList.add('invalid'); note.textContent = T.needName; input.focus(); return; }
-    if (!answer) { note.textContent = T.needAnswer; return; }
+    if (!name) { input.classList.add('invalid'); note.textContent = texts().needName; input.focus(); return; }
+    if (!answer) { note.textContent = texts().needAnswer; return; }
     const gf = CONFIG.googleForm;
-    if (!CONFIG.rsvpEndpoint && !gf.formId) { note.textContent = T.error; console.warn('Не задан ни rsvpEndpoint, ни googleForm — см. README.md'); return; }
+    if (!CONFIG.rsvpEndpoint && !gf.formId) { note.textContent = texts().error; console.warn('Не задан ни rsvpEndpoint, ни googleForm — см. README.md'); return; }
 
     btn.disabled = true;
-    note.textContent = T.sending;
+    note.textContent = texts().sending;
     try {
       if (gf.formId) {
         // Google Forms не отдаёт CORS-заголовки — ответ «непрозрачный», считаем отправку успешной
         const body = new URLSearchParams({ [`entry.${gf.nameEntry}`]: name, [`entry.${gf.answerEntry}`]: answer });
         await fetch(`https://docs.google.com/forms/d/e/${gf.formId}/formResponse`, { method: 'POST', mode: 'no-cors', body });
-        box.innerHTML = `<p class="form-done">${T.done}</p>`;
+        box.innerHTML = `<p class="form-done">${texts().done}</p>`;
         return;
       }
       // text/plain — «простой» запрос без preflight, Apps Script его принимает
@@ -248,10 +341,10 @@ soundBtn.addEventListener('click', e => {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data.ok === false) throw new Error(data.error || res.status);
-      box.innerHTML = `<p class="form-done">${T.done}</p>`;
+      box.innerHTML = `<p class="form-done">${texts().done}</p>`;
     } catch (err) {
       console.error(err);
-      note.textContent = T.error;
+      note.textContent = texts().error;
       btn.disabled = false;
     }
   });

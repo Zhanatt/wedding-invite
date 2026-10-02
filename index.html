@@ -15,9 +15,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261003k">
+  <link rel="stylesheet" href="style.css?v=20261003l">
 </head>
 <body class="locked">
+<div class="lang" role="group" aria-label="Тил / Язык">
+  <button type="button" data-lang="ky" aria-pressed="true">КЫР</button>
+  <button type="button" data-lang="ru" aria-pressed="false">РУС</button>
+</div>
 <audio id="theme" src="audio/theme.mp3?v=nelya" preload="auto"></audio>
 
 <main class="page">
@@ -25,7 +29,7 @@
   <!-- ===== приглашение ===== -->
   <section class="intro">
     <div class="topbar">
-      <button type="button" class="sound-btn" data-playing="false" aria-pressed="false" aria-label="Музыканы күйгүзүү / өчүрүү">
+      <button type="button" class="sound-btn" data-playing="false" aria-pressed="false" aria-label="Музыканы күйгүзүү / өчүрүү" data-i18n-attr="aria-label:sound">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M4 9h4l5-4v14l-5-4H4z"/>
           <path class="sound-wave" d="M16.5 9a4 4 0 0 1 0 6"/>
@@ -41,11 +45,11 @@
     </div>
 
     <div class="arch" data-anim>
-      <svg class="arch-mark" viewBox="0 0 44 22" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" aria-hidden="true"><path d="M22 20c-6-10-18-10-18-2 0 5 7 6 9 2"/><path d="M22 20c6-10 18-10 18-2 0 5-7 6-9 2"/><path d="M22 20V4"/></svg>
-      <p>Урматтуу биздин сыйлуу коногубуз!</p>
-      <p>Сиздерди кызыбыз <span class="name">Сани-Рабиганын</span> кыз узатуу тоюна чакырабыз! Кубанычыбызды бөлүшүп, ак батаңызды берип, кадырлуу коногубуз болуп кетиңиз!</p>
+      <span class="orn orn-horns arch-mark" aria-hidden="true"></span>
+      <p data-i18n="greet">Урматтуу биздин сыйлуу коногубуз!</p>
+      <p data-i18n="invite">Сиздерди кызыбыз <span class="name">Сани-Рабиганын</span> кыз узатуу тоюна чакырабыз! Кубанычыбызды бөлүшүп, ак батаңызды берип, кадырлуу коногубуз болуп кетиңиз!</p>
       <div class="scroll-hint" aria-hidden="true">
-        <span>Ылдый жылдырыңыз</span>
+        <span data-i18n="scroll">Ылдый жылдырыңыз</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </div>
     </div>
@@ -53,48 +57,51 @@
 
   <!-- ===== дата ===== -->
   <section class="block" data-anim>
-    <p class="eyebrow">Той күнү</p>
+    <p class="eyebrow" data-i18n="dayTitle">Той күнү</p>
     <h2 class="title">Октябрь 2026</h2>
     <div class="cal" id="cal"></div>
-    <p class="cal-note">Жекшемби, саат 16:00</p>
+    <p class="cal-note" data-i18n="calNote">Жекшемби, саат 16:00</p>
+    <span class="orn orn-band" aria-hidden="true"></span>
   </section>
 
   <!-- ===== таймер ===== -->
   <section class="block countdown" data-anim>
-    <p class="eyebrow">Тойго чейин</p>
+    <p class="eyebrow" data-i18n="until">Тойго чейин</p>
     <div class="timer" id="countdown" role="timer">
-      <div class="timer-cell"><span class="timer-value" data-unit="d">00</span><span class="timer-unit">күн</span></div>
-      <div class="timer-cell"><span class="timer-value" data-unit="h">00</span><span class="timer-unit">саат</span></div>
-      <div class="timer-cell"><span class="timer-value" data-unit="m">00</span><span class="timer-unit">мүнөт</span></div>
-      <div class="timer-cell"><span class="timer-value" data-unit="s">00</span><span class="timer-unit">секунд</span></div>
+      <div class="timer-cell"><span class="timer-value" data-unit="d">00</span><span class="timer-unit" data-i18n="uD">күн</span></div>
+      <div class="timer-cell"><span class="timer-value" data-unit="h">00</span><span class="timer-unit" data-i18n="uH">саат</span></div>
+      <div class="timer-cell"><span class="timer-value" data-unit="m">00</span><span class="timer-unit" data-i18n="uM">мүнөт</span></div>
+      <div class="timer-cell"><span class="timer-value" data-unit="s">00</span><span class="timer-unit" data-i18n="uS">секунд</span></div>
     </div>
   </section>
 
   <!-- ===== программа ===== -->
   <section class="block" data-anim>
-    <h2 class="title">Тойдун жүрүшү</h2>
+    <h2 class="title" data-i18n="program">Тойдун жүрүшү</h2>
+    <span class="orn orn-band" aria-hidden="true"></span>
     <ol class="program">
-      <li><span class="program-time">16:00</span><span class="program-dot"></span><span class="program-text">Конокторду тосуп алуу</span></li>
-      <li><span class="program-time">17:00</span><span class="program-dot"></span><span class="program-text">Тойдун башталышы</span></li>
-      <li><span class="program-time">18:00</span><span class="program-dot"></span><span class="program-text">Майрамдык дасторкон</span></li>
-      <li><span class="program-time">19:00</span><span class="program-dot"></span><span class="program-text">Майрамдык программа</span></li>
-      <li><span class="program-time">23:00</span><span class="program-dot"></span><span class="program-text">Кеченин аякташы</span></li>
+      <li><span class="program-time">16:00</span><span class="program-dot"></span><span class="program-text" data-i18n="p1">Конокторду тосуп алуу</span></li>
+      <li><span class="program-time">17:00</span><span class="program-dot"></span><span class="program-text" data-i18n="p2">Тойдун башталышы</span></li>
+      <li><span class="program-time">18:00</span><span class="program-dot"></span><span class="program-text" data-i18n="p3">Майрамдык дасторкон</span></li>
+      <li><span class="program-time">19:00</span><span class="program-dot"></span><span class="program-text" data-i18n="p4">Майрамдык программа</span></li>
+      <li><span class="program-time">23:00</span><span class="program-dot"></span><span class="program-text" data-i18n="p5">Кеченин аякташы</span></li>
     </ol>
   </section>
 
   <!-- ===== место ===== -->
   <section class="card venue" data-anim>
     <svg class="venue-pin" viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 31s10-11 10-19A10 10 0 0 0 2 12c0 8 10 19 10 19z"/><circle cx="12" cy="12" r="3.5"/></svg>
-    <p class="eyebrow eyebrow-light">Той өтүүчү жер</p>
+    <p class="eyebrow eyebrow-light" data-i18n="venue">Той өтүүчү жер</p>
     <h2 class="venue-name">ТОКМОК</h2>
-    <p class="venue-address">Токмок шаары</p>
-    <a class="pill-btn" href="https://2gis.kg/tokmok" target="_blank" rel="noopener noreferrer">Картадан көрүү
+    <p class="venue-address" data-i18n="city">Токмок шаары</p>
+    <a class="pill-btn" href="https://2gis.kg/tokmok" target="_blank" rel="noopener noreferrer"><span data-i18n="map">Картадан көрүү</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></a>
   </section>
 
   <!-- ===== подпись ===== -->
   <section class="block hosts" data-anim>
-    <p class="text">Сиздерди чыдамсыздык менен күтөбүз!<br>Урмат менен, той ээлери:</p>
+    <span class="orn orn-band" aria-hidden="true"></span>
+    <p class="text" data-i18n="wait">Сиздерди чыдамсыздык менен күтөбүз!<br>Урмат менен, той ээлери:</p>
     <p class="hosts-names">Алимардан — Ишенгүл</p>
   </section>
 
@@ -102,31 +109,31 @@
   <section class="card rsvp" id="rsvp" data-anim>
     <form class="form" novalidate>
       <div class="form-head">
-        <h2 class="title">Сурамжылоо</h2>
-        <p>Тойго катышарыңызды билдирип коюңуз</p>
+        <span class="orn orn-horns" aria-hidden="true"></span>
+        <h2 class="title" data-i18n="rsvp">Сурамжылоо</h2>
+        <p data-i18n="rsvpSub">Тойго катышарыңызды билдирип коюңуз</p>
       </div>
-      <label class="form-field">Аты-жөнүңүз
-        <input class="form-input" type="text" name="name" autocomplete="name" placeholder="Мисалы: Асел Мамбетова" required>
+      <label class="form-field"><span data-i18n="nameLabel">Аты-жөнүңүз</span>
+        <input class="form-input" type="text" name="name" autocomplete="name" placeholder="Мисалы: Асел Мамбетова" data-i18n-attr="placeholder:namePh" required>
       </label>
-      <p class="form-question" id="rsvp-question">Жубайыңыз менен келсеңиз, экөөңүздүн тең аты-жөнүңүздү жазыңыз</p>
+      <p class="form-question" id="rsvp-question" data-i18n="question">Жубайыңыз менен келсеңиз, экөөңүздүн тең аты-жөнүңүздү жазыңыз</p>
       <fieldset class="form-options" aria-labelledby="rsvp-question">
-        <label class="form-option"><input type="radio" name="answer" value="Албетте, келем" required><span class="form-dot"></span><span>Албетте, келем</span></label>
-        <label class="form-option"><input type="radio" name="answer" value="Жубайым менен келем"><span class="form-dot"></span><span>Жубайым менен келем</span></label>
-        <label class="form-option"><input type="radio" name="answer" value="Келе албайм"><span class="form-dot"></span><span>Келе албайм</span></label>
+        <label class="form-option"><input type="radio" name="answer" value="Албетте, келем" required><span class="form-dot"></span><span data-i18n="a1">Албетте, келем</span></label>
+        <label class="form-option"><input type="radio" name="answer" value="Жубайым менен келем"><span class="form-dot"></span><span data-i18n="a2">Жубайым менен келем</span></label>
+        <label class="form-option"><input type="radio" name="answer" value="Келе албайм"><span class="form-dot"></span><span data-i18n="a3">Келе албайм</span></label>
       </fieldset>
-      <button class="form-submit" type="submit">Жоопту жөнөтүү</button>
+      <button class="form-submit" type="submit" data-i18n="submit">Жоопту жөнөтүү</button>
       <p class="form-note" role="status" aria-live="polite"></p>
     </form>
   </section>
 
   <!-- ===== финал: птички и имя ===== -->
-  <section class="block finale">
+  <section class="block finale" data-anim>
     <div class="perch-line">
       <svg class="ornament" viewBox="0 0 260 18" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" aria-hidden="true">
-        <path d="M2 9h110"/><path d="M148 9h110"/>
-        <path d="M130 9c-4-6-12-6-12 0 0 4 5 5 7 2"/><path d="M130 9c4-6 12-6 12 0 0 4-5 5-7 2"/>
-        <path d="M130 9c-4 6-12 6-12 0"/><path d="M130 9c4 6 12 6 12 0"/>
+        <path d="M112 9H2" pathLength="1"/><path d="M148 9h110" pathLength="1"/>
       </svg>
+      <span class="orn orn-horns perch-horns" aria-hidden="true"></span>
       <svg class="perch-heart" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34.5C9 26.8 3.6 20.6 3.6 13.9 3.6 9.1 7.3 5.4 11.8 5.4c3.4 0 6.3 2 8.2 5.1 1.9-3.1 4.8-5.1 8.2-5.1 4.5 0 8.2 3.7 8.2 8.5 0 6.7-5.4 12.9-16.4 20.6Z"/></svg>
     </div>
     <p class="footer-names">Сани-Рабига</p>
@@ -137,15 +144,11 @@
 </main>
 
 <!-- ===== конверт-заставка ===== -->
-<button type="button" class="envelope" data-open="false" aria-label="Ачуу үчүн басыңыз">
+<button type="button" class="envelope" data-open="false" aria-label="Ачуу үчүн басыңыз" data-i18n-attr="aria-label:open">
   <span class="envelope-inner">
     <span class="envelope-top">
-      <span class="eyebrow">Кыз узатуу</span>
-      <svg class="ornament" viewBox="0 0 220 18" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" aria-hidden="true">
-        <path d="M2 9h90"/><path d="M128 9h90"/>
-        <path d="M110 9c-4-6-12-6-12 0 0 4 5 5 7 2"/><path d="M110 9c4-6 12-6 12 0 0 4-5 5-7 2"/>
-        <path d="M110 9c-4 6-12 6-12 0"/><path d="M110 9c4 6 12 6 12 0"/>
-      </svg>
+      <span class="eyebrow" data-i18n="kyz">Кыз узатуу</span>
+      <span class="orn orn-band" aria-hidden="true"></span>
     </span>
     <span class="envelope-art">
       <svg viewBox="0 0 310 214" aria-hidden="true">
@@ -158,11 +161,11 @@
     <span class="envelope-bottom">
       <span class="envelope-names">Сани-Рабига</span>
       <span class="envelope-date">25 · 10 · 2026</span>
-      <span class="envelope-hint">Ачуу үчүн басыңыз</span>
+      <span class="envelope-hint" data-i18n="open">Ачуу үчүн басыңыз</span>
     </span>
   </span>
 </button>
 
-<script src="app.js?v=20261003k"></script>
+<script src="app.js?v=20261003l"></script>
 </body>
 </html>
