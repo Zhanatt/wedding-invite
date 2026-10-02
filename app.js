@@ -7,11 +7,11 @@ const CONFIG = {
   googleForm: { formId: '', nameEntry: '', answerEntry: '' },
   // Музыка играет через встроенный плеер YouTube (ничего не скачивается).
   // Пусто — берётся файл audio/theme.mp3, если он есть.
-  youtubeId: '', // играет файл audio/theme.mp3 (JAX 02.14 — Өзгөчө күн)
-  youtubeStart: 7, // с какой секунды играть (и при повторе)
+  youtubeId: '', // играет файл audio/theme.mp3 (Неля — Кыз узатуу)
+  youtubeStart: 0, // с какой секунды играть (и при повторе)
   // Файл audio/theme.mp3 включается прямо по нажатию на конверт (YouTube так не умеет).
   // Чтобы играл файл — положите его в audio/ и сделайте youtubeId: ''.
-  audioStart: 7,
+  audioStart: 0,
   weddingDate: '2026-10-25T16:00:00+06:00',
   calendar: { year: 2026, month: 10, mark: 25 },
   texts: {
