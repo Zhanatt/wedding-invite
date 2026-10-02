@@ -1,7 +1,7 @@
 /* ===== Настройки ===== */
 const CONFIG = {
   // URL веб-приложения Google Apps Script (см. README.md). Пока пусто — форма не отправится.
-  rsvpEndpoint: '',
+  rsvpEndpoint: 'https://script.google.com/macros/s/AKfycbydwGkepympC928jy6cGSgv1FNuXsst2tgmQKmBZGsPPjXKUw7qOJfvT7RnRN6P1fHC/exec',
   // Вариант без Apps Script: Google Форма, привязанная к таблице (см. README.md).
   // Если задан formId — ответы идут в форму, rsvpEndpoint не нужен.
   googleForm: { formId: '', nameEntry: '', answerEntry: '' },
