@@ -7,7 +7,7 @@ const CONFIG = {
   googleForm: { formId: '', nameEntry: '', answerEntry: '' },
   // Музыка играет через встроенный плеер YouTube (ничего не скачивается).
   // Пусто — берётся файл audio/theme.mp3, если он есть.
-  youtubeId: '',
+  youtubeId: 'Y7dBGjXtLT4', // JAX 02.14 — Өзгөчө күн (Official Audio)
   weddingDate: '2026-10-17T16:00:00+06:00',
   calendar: { year: 2026, month: 10, mark: 17 },
   texts: {
@@ -93,17 +93,23 @@ function youtubeMusic(id) {
   let player = null, wantPlay = false;
   const box = document.createElement('div');
   box.id = 'yt-music';
-  box.style.cssText = 'position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1';
+  // YouTube не запускает плеер меньше 200×200 — делаем его полноразмерным, но прозрачным и под содержимым
+  box.style.cssText = 'position:fixed;left:0;bottom:0;width:200px;height:200px;opacity:0;pointer-events:none;z-index:-1';
   box.innerHTML = '<div id="yt-player"></div>';
   document.body.appendChild(box);
 
   window.onYouTubeIframeAPIReady = () => {
     player = new YT.Player('yt-player', {
-      width: 2, height: 2, videoId: id,
+      width: 200, height: 200, videoId: id,
       playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: id, playsinline: 1, disablekb: 1 },
       events: {
         onReady: () => { player.setVolume(70); if (wantPlay && !userMuted) player.playVideo(); },
-        onStateChange: e => setPlaying(e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING),
+        onStateChange: e => {
+          const on = e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING;
+          // заиграло без звука (браузер разрешил только так) — включаем звук
+          if (on && wantPlay && !userMuted && player.isMuted()) player.unMute();
+          setPlaying(on);
+        },
         onError: hideSound, // видео удалено или владелец запретил встраивание (101/150)
       },
     });
@@ -114,7 +120,16 @@ function youtubeMusic(id) {
   document.head.appendChild(s);
 
   return {
-    play: () => { wantPlay = true; if (player && player.playVideo) player.playVideo(); },
+    play: () => {
+      wantPlay = true;
+      if (!player || !player.playVideo) return; // запустится в onReady
+      player.unMute();
+      player.playVideo();
+      // если браузер не дал стартовать со звуком — стартуем без звука, onStateChange включит звук
+      setTimeout(() => {
+        if (wantPlay && player.getPlayerState() === -1) { player.mute(); player.playVideo(); }
+      }, 1500);
+    },
     pause: () => { wantPlay = false; if (player && player.pauseVideo) player.pauseVideo(); setPlaying(false); },
     isPaused: () => soundBtn.dataset.playing !== 'true',
   };
