@@ -145,7 +145,8 @@ img, svg { display: block; }
 .timer-cell { border: 1px solid var(--line); border-radius: 16px; padding: 16px 0 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .timer-value { font-family: var(--font-display); font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; }
 .timer-unit { font-size: 11px; color: var(--muted); }
-.perch-line { position: relative; width: 260px; margin-top: 64px; }
+.finale { padding-top: 64px; gap: 24px; }
+.perch-line { position: relative; width: 260px; }
 .perch-line .ornament { width: 260px; }
 .perch-line .ornament { display: block; }
 .footer-names { font-family: var(--font-display); font-style: italic; font-size: 26px; }

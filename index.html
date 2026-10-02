@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261003j">
+  <link rel="stylesheet" href="style.css?v=20261003k">
 </head>
 <body class="locked">
 <audio id="theme" src="audio/theme.mp3?v=nelya" preload="auto"></audio>
@@ -37,7 +37,7 @@
 
     <div class="monogram" data-anim>
       <p class="monogram-letters" aria-hidden="true">С<span class="amp">·</span>Р</p>
-      <h1 class="monogram-names">Сани-Рабига<span class="monogram-sub">Максатбек кызы</span></h1>
+      <h1 class="monogram-names">Сани-Рабига</h1>
     </div>
 
     <div class="arch" data-anim>
@@ -57,6 +57,17 @@
     <h2 class="title">Октябрь 2026</h2>
     <div class="cal" id="cal"></div>
     <p class="cal-note">Жекшемби, саат 16:00</p>
+  </section>
+
+  <!-- ===== таймер ===== -->
+  <section class="block countdown" data-anim>
+    <p class="eyebrow">Тойго чейин</p>
+    <div class="timer" id="countdown" role="timer">
+      <div class="timer-cell"><span class="timer-value" data-unit="d">00</span><span class="timer-unit">күн</span></div>
+      <div class="timer-cell"><span class="timer-value" data-unit="h">00</span><span class="timer-unit">саат</span></div>
+      <div class="timer-cell"><span class="timer-value" data-unit="m">00</span><span class="timer-unit">мүнөт</span></div>
+      <div class="timer-cell"><span class="timer-value" data-unit="s">00</span><span class="timer-unit">секунд</span></div>
+    </div>
   </section>
 
   <!-- ===== программа ===== -->
@@ -108,15 +119,8 @@
     </form>
   </section>
 
-  <!-- ===== таймер ===== -->
-  <section class="block countdown" data-anim>
-    <p class="eyebrow">Тойго чейин</p>
-    <div class="timer" id="countdown" role="timer">
-      <div class="timer-cell"><span class="timer-value" data-unit="d">00</span><span class="timer-unit">күн</span></div>
-      <div class="timer-cell"><span class="timer-value" data-unit="h">00</span><span class="timer-unit">саат</span></div>
-      <div class="timer-cell"><span class="timer-value" data-unit="m">00</span><span class="timer-unit">мүнөт</span></div>
-      <div class="timer-cell"><span class="timer-value" data-unit="s">00</span><span class="timer-unit">секунд</span></div>
-    </div>
+  <!-- ===== финал: птички и имя ===== -->
+  <section class="block finale">
     <div class="perch-line">
       <svg class="ornament" viewBox="0 0 260 18" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" aria-hidden="true">
         <path d="M2 9h110"/><path d="M148 9h110"/>
@@ -128,7 +132,8 @@
     <p class="footer-names">Сани-Рабига</p>
   </section>
 
-  <p class="sr-only">Сани-Рабига Максатбек кызы — кыз узатуу, 25.10.2026, саат 16:00, Токмок шаары</p>
+
+  <p class="sr-only">Сани-Рабига — кыз узатуу, 25.10.2026, саат 16:00, Токмок шаары</p>
 </main>
 
 <!-- ===== конверт-заставка ===== -->
@@ -152,13 +157,12 @@
     </span>
     <span class="envelope-bottom">
       <span class="envelope-names">Сани-Рабига</span>
-      <span class="envelope-sub">Максатбек кызы</span>
       <span class="envelope-date">25 · 10 · 2026</span>
       <span class="envelope-hint">Ачуу үчүн басыңыз</span>
     </span>
   </span>
 </button>
 
-<script src="app.js?v=20261003j"></script>
+<script src="app.js?v=20261003k"></script>
 </body>
 </html>
