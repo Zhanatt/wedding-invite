@@ -9,6 +9,9 @@ const CONFIG = {
   // Пусто — берётся файл audio/theme.mp3, если он есть.
   youtubeId: 'Y7dBGjXtLT4', // JAX 02.14 — Өзгөчө күн (Official Audio)
   youtubeStart: 7, // с какой секунды играть (и при повторе)
+  // Файл audio/theme.mp3 включается прямо по нажатию на конверт (YouTube так не умеет).
+  // Чтобы играл файл — положите его в audio/ и сделайте youtubeId: ''.
+  audioStart: 7,
   weddingDate: '2026-10-17T16:00:00+06:00',
   calendar: { year: 2026, month: 10, mark: 17 },
   texts: {
@@ -82,8 +85,14 @@ function fileMusic(audio) {
   // ошибка загрузки могла случиться ещё до запуска скрипта — проверяем и сейчас, и потом
   if (audio.error) hideSound();
   audio.addEventListener('error', hideSound);
+  const START = CONFIG.audioStart || 0;
+  audio.loop = false;
+  audio.addEventListener('ended', () => { audio.currentTime = START; audio.play(); }); // повтор тоже с START
   return {
-    play: () => audio.play().then(() => setPlaying(true), err => { if (err && err.name === 'NotSupportedError') hideSound(); }),
+    play: () => {
+      if (audio.currentTime < START) audio.currentTime = START;
+      return audio.play().then(() => setPlaying(true), err => { if (err && err.name === 'NotSupportedError') hideSound(); });
+    },
     pause: () => { audio.pause(); setPlaying(false); },
     isPaused: () => audio.paused,
   };
