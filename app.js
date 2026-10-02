@@ -264,33 +264,22 @@ soundBtn.addEventListener('click', e => {
   if (!arch || !perchLine) return;
 
   const flower = (x, y, c) => `<g class="bird-flower">${[0, 72, 144, 216, 288].map(a => {
-    const r = a * Math.PI / 180; return `<circle cx="${(x + Math.cos(r) * 2.7).toFixed(2)}" cy="${(y + Math.sin(r) * 2.7).toFixed(2)}" r="2.4" fill="${c}"/>`;
-  }).join('')}<circle cx="${x}" cy="${y}" r="1.5" fill="#d9a441"/></g>`;
+    const r = a * Math.PI / 180; return `<circle cx="${(x + Math.cos(r) * 34).toFixed(1)}" cy="${(y + Math.sin(r) * 34).toFixed(1)}" r="30" fill="${c}"/>`;
+  }).join('')}<circle cx="${x}" cy="${y}" r="19" fill="#d9a441"/></g>`;
   const CROWN = `<g class="bird-crown">
-    <ellipse cx="62" cy="15" rx="3.4" ry="1.6" transform="rotate(-40 62 15)" fill="#6f8a5c"/>
-    <ellipse cx="80" cy="13" rx="3.4" ry="1.6" transform="rotate(35 80 13)" fill="#6f8a5c"/>
-    ${flower(58, 20, '#f2b8c6')}${flower(65, 13.5, '#fff5e1')}${flower(73, 11, '#f2b8c6')}${flower(81, 14.5, '#fff5e1')}
+    <ellipse cx="585" cy="88" rx="44" ry="19" transform="rotate(-50 585 88)" fill="#6f8a5c"/>
+    <ellipse cx="795" cy="10" rx="44" ry="19" transform="rotate(10 795 10)" fill="#6f8a5c"/>
+    ${flower(551, 145, '#f2b8c6')}${flower(626, 56, '#fff5e1')}${flower(735, 16, '#f2b8c6')}${flower(850, 36, '#fff5e1')}
   </g>`;
-  const BOW = `<g class="bird-bow"><path d="M69 41.5l7 4.5-7 4.5zM83 41.5l-7 4.5 7 4.5z" fill="#fff"/><circle cx="76" cy="46" r="2.1" fill="#fff"/></g>`;
-  // пухлая птичка: тельце + голова + хвостик + крылышко; outline — кремовый контур вокруг всего силуэта
+  const BOW = `<g class="bird-bow"><path d="M800 272l130 58-130 58zM1060 272l-130 58 130 58z" fill="#fff"/><circle cx="930" cy="330" r="32" fill="#fff"/></g>`;
+  // силуэт птицы с картинки: тело (голова, клюв, грудка, хвост) + крыло с тремя перьями;
+  // сложенное крыло ровно дополняет тело до исходного силуэта. outline — кремовый контур вокруг всего
   const shapes = cls => `<g class="${cls}">
-    <path class="bird-tail" d="M26 42C16 40 9 35 4 31c2 9 5 17 10 22 4 3 10 3 13 1z"/>
-    <ellipse cx="48" cy="48" rx="28" ry="21"/>
-    <circle cx="70" cy="30" r="16"/>
-    <path class="bird-wing" d="M55 43C47 34 31 34 23 44c7 11 23 13 32-1z"/>
+    <path class="bird-body" d="M322 680C260 725 160 775 20 768C120 840 240 862 340 860C620 858 840 710 940 450C970 370 982 310 978 243C1040 200 1075 160 1100 121C1055 142 1010 154 965 160C1020 125 1055 80 1072 28C1020 60 970 78 918 90C860 28 800 18 758 18C630 18 530 120 532 240C532 255 535 272 538 287C500 410 420 570 322 680Z"/>
+    <path class="bird-wing" d="M538 287C360 275 210 200 100 57C60 120 55 180 67 230C80 280 115 320 157 344C120 340 85 330 55 313C52 390 85 450 122 490C150 510 185 525 223 529C190 536 160 538 129 532C150 600 200 660 270 678C290 680 305 680 322 680C420 570 500 410 538 287Z"/>
   </g>`;
-  const svg = extra => `<svg viewBox="0 0 100 80" aria-hidden="true">
-    ${shapes('bird-outline')}
-    <g class="bird-legs"><path d="M42 67l-2 10M53 67v10"/></g>
-    ${shapes('bird-fill')}
-    <path class="bird-beak" d="M84.5 27.5l8.5 3.2-8.5 3.3z"/>
-    <g class="bird-face">
-      <circle cx="75.5" cy="27" r="3.6" fill="#fff"/><circle cx="76.3" cy="27.4" r="2.4" fill="#2a0a10"/><circle cx="77.1" cy="26.4" r=".9" fill="#fff"/>
-      <ellipse cx="75" cy="36" rx="3.6" ry="2.2" fill="#f2a5b5" opacity=".85"/>
-    </g>
-    ${extra}
-  </svg>`;
-  const W = 72, FOOT_X = W * .475, FOOT_Y = W * .77; // точка лапок в px
+  const svg = extra => `<svg viewBox="0 0 1120 880" aria-hidden="true">${shapes('bird-outline')}${shapes('bird-fill')}${extra}</svg>`;
+  const W = 84, FOOT_X = W * 380 / 1120, FOOT_Y = W * 860 / 1120; // точка, которой птица касается опоры (низ грудки), в px
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // жених уже сидит на орнаменте внизу
@@ -319,10 +308,10 @@ soundBtn.addEventListener('click', e => {
     raf = 0;
     const t = (now - t0) / 1000;
     const a = docPos(arch), r = arch.offsetWidth / 2;
-    const home = { x: a.x + r * 1.42, y: a.y + r * .62 };
+    const home = { x: a.x + r * 1.30, y: a.y + r * .66 };
     trace.style.transform = `translate3d(${(home.x - FOOT_X).toFixed(1)}px, ${(home.y - FOOT_Y).toFixed(1)}px, 0)`;
     const pl = docPos(perchLine), pw = perchLine.offsetWidth;
-    const land = { x: pl.x + pw * 40 / 220, y: pl.y + pw * 9 / 220 };
+    const land = { x: pl.x + pw * 50 / 260, y: pl.y + pw * 9 / 260 };
     const pageW = page.offsetWidth, pageL = docPos(page).x, vh = innerHeight;
 
     let tx, ty, mode;
