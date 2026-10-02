@@ -23,8 +23,7 @@ const CONFIG = {
   },
 };
 
-const MONTHS = ['ЯНВАРЬ', 'ФЕВРАЛЬ', 'МАРТ', 'АПРЕЛЬ', 'МАЙ', 'ИЮНЬ', 'ИЮЛЬ', 'АВГУСТ', 'СЕНТЯБРЬ', 'ОКТЯБРЬ', 'НОЯБРЬ', 'ДЕКАБРЬ'];
-const WEEKDAYS = ['дүй', 'шей', 'шар', 'бей', 'жум', 'иш', 'жек'];
+const WEEKDAYS = ['Дш', 'Шш', 'Шр', 'Бш', 'Жм', 'Иш', 'Жк'];
 
 /* ===== Календарь ===== */
 (function renderCalendar() {
@@ -34,39 +33,22 @@ const WEEKDAYS = ['дүй', 'шей', 'шар', 'бей', 'жум', 'иш', 'ж�
   let cells = WEEKDAYS.map(d => `<span class="cal-wd">${d}</span>`).join('');
   for (let i = 0; i < first; i++) cells += '<span class="cal-day"></span>';
   for (let d = 1; d <= days; d++) {
-    cells += d === mark
-      ? `<span class="cal-day"><span class="cal-day-mark" aria-hidden="true"></span>${d}</span>`
-      : `<span class="cal-day">${d}</span>`;
+    cells += d === mark ? `<span class="cal-day cal-day-mark">${d}</span>` : `<span class="cal-day">${d}</span>`;
   }
-  document.getElementById('cal').innerHTML =
-    `<div class="cal-head"><span>${MONTHS[month - 1]}</span><span>${year}</span></div><div class="cal-rule"></div><div class="cal-grid">${cells}</div>`;
+  document.getElementById('cal').innerHTML = cells;
 })();
 
 /* ===== Появление элементов по скроллу ===== */
 function startReveal() {
-  const canvas = document.querySelector('.canvas');
-  let pending = Array.from(document.querySelectorAll('[data-anim]:not(.is-in)'));
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    pending.forEach(el => el.classList.add('is-in'));
+  const items = document.querySelectorAll('[data-anim]:not(.is-in)');
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    items.forEach(el => el.classList.add('is-in'));
     return;
   }
-  let frame = 0;
-  const check = () => {
-    frame = 0;
-    const top = canvas.getBoundingClientRect().top + scrollY;
-    const edge = scrollY + innerHeight - 40;
-    pending = pending.filter(el => {
-      const y = top + el.offsetTop; // позиция без учёта transform
-      if (y >= edge) return true;
-      if (y < scrollY) el.classList.add('is-instant'); // уже проскроллили — без анимации
-      el.classList.add('is-in');
-      return false;
-    });
-    if (!pending.length) ['scroll', 'resize', 'orientationchange'].forEach(e => removeEventListener(e, schedule));
-  };
-  const schedule = () => { if (!frame) frame = requestAnimationFrame(check); };
-  ['scroll', 'resize', 'orientationchange'].forEach(e => addEventListener(e, schedule, { passive: true }));
-  check();
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -8% 0px' });
+  items.forEach(el => io.observe(el));
 }
 
 /* ===== Музыка ===== */
@@ -212,7 +194,8 @@ soundBtn.addEventListener('click', e => {
 
 /* ===== Таймер ===== */
 (function countdown() {
-  const el = document.getElementById('countdown');
+  const cells = {};
+  document.querySelectorAll('#countdown [data-unit]').forEach(el => { cells[el.dataset.unit] = el; });
   const target = new Date(CONFIG.weddingDate).getTime();
   const pad = n => String(n).padStart(2, '0');
   const tick = () => {
@@ -220,7 +203,8 @@ soundBtn.addEventListener('click', e => {
     const d = Math.floor(s / 86400); s %= 86400;
     const h = Math.floor(s / 3600); s %= 3600;
     const m = Math.floor(s / 60); s %= 60;
-    el.textContent = `${pad(d)} : ${pad(h)} : ${pad(m)} : ${pad(s)}`;
+    cells.d.textContent = pad(d); cells.h.textContent = pad(h);
+    cells.m.textContent = pad(m); cells.s.textContent = pad(s);
   };
   tick();
   setInterval(tick, 1000);

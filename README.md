@@ -31,20 +31,12 @@
    googleForm: { formId: '<formId>', nameEntry: '111', answerEntry: '222' },
    ```
 
-## Свои картинки и музыка
+## Дизайн и музыка
 
-Всё нарисовано своими SVG-иллюстрациями, но любую можно заменить файлом — он подхватится автоматически:
+Дизайн по макету из Claude Design: бордовый `#800020` + крем `#FFF5E1`, шрифты Cormorant Garamond и Montserrat.
+Цвета меняются в начале `style.css` (`--burgundy`, `--cream`, `--ink`).
 
-| Файл | Где |
-|---|---|
-| `img/hands.png` | первый экран (сейчас — кольца) |
-| `img/banquet.png` | банкетный стол |
-| `img/chandelier.png` | люстра с цветами |
-| `img/prog-table.png`, `prog-plate.png`, `prog-couple.png`, `prog-cake.png`, `prog-car.png` | иконки программы |
-| `img/footer.jpg` | фото под таймером |
-| `audio/theme.mp3` | музыка (без файла кнопка звука скрывается) |
-
-PNG лучше брать с прозрачным фоном.
+Музыка — файл `audio/theme.mp3` (без файла кнопка звука скрывается), старт с `CONFIG.audioStart` секунды.
 
 ## Тексты и данные
 
