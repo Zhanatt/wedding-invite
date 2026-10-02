@@ -5,6 +5,9 @@ const CONFIG = {
   // Вариант без Apps Script: Google Форма, привязанная к таблице (см. README.md).
   // Если задан formId — ответы идут в форму, rsvpEndpoint не нужен.
   googleForm: { formId: '', nameEntry: '', answerEntry: '' },
+  // Музыка играет через встроенный плеер YouTube (ничего не скачивается).
+  // Пусто — берётся файл audio/theme.mp3, если он есть.
+  youtubeId: '',
   weddingDate: '2026-10-17T16:00:00+06:00',
   calendar: { year: 2026, month: 10, mark: 17 },
   texts: {
@@ -63,27 +66,67 @@ function startReveal() {
 }
 
 /* ===== Музыка ===== */
-const audio = document.getElementById('theme');
 const soundBtn = document.querySelector('.sound-btn');
 let userMuted = false;
+const hideSound = () => { soundBtn.style.display = 'none'; };
 function setPlaying(on) {
   soundBtn.dataset.playing = String(on);
   soundBtn.setAttribute('aria-pressed', String(on));
 }
-function tryPlay() {
-  if (userMuted) return;
-  audio.play().then(() => setPlaying(true), err => {
-    if (err && err.name === 'NotSupportedError') soundBtn.style.display = 'none';
-  });
+
+// единый интерфейс плеера: play() / pause() / isPaused()
+const music = CONFIG.youtubeId ? youtubeMusic(CONFIG.youtubeId) : fileMusic(document.getElementById('theme'));
+
+function fileMusic(audio) {
+  // ошибка загрузки могла случиться ещё до запуска скрипта — проверяем и сейчас, и потом
+  if (audio.error) hideSound();
+  audio.addEventListener('error', hideSound);
+  return {
+    play: () => audio.play().then(() => setPlaying(true), err => { if (err && err.name === 'NotSupportedError') hideSound(); }),
+    pause: () => { audio.pause(); setPlaying(false); },
+    isPaused: () => audio.paused,
+  };
 }
-// ошибка загрузки могла случиться ещё до запуска скрипта — проверяем и сейчас, и потом
-const hideSound = () => { soundBtn.style.display = 'none'; };
-if (audio.error) hideSound();
-audio.addEventListener('error', hideSound);
+
+function youtubeMusic(id) {
+  document.getElementById('theme').remove();
+  let player = null, wantPlay = false;
+  const box = document.createElement('div');
+  box.id = 'yt-music';
+  box.style.cssText = 'position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1';
+  box.innerHTML = '<div id="yt-player"></div>';
+  document.body.appendChild(box);
+
+  window.onYouTubeIframeAPIReady = () => {
+    player = new YT.Player('yt-player', {
+      width: 2, height: 2, videoId: id,
+      playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: id, playsinline: 1, disablekb: 1 },
+      events: {
+        onReady: () => { player.setVolume(70); if (wantPlay && !userMuted) player.playVideo(); },
+        onStateChange: e => setPlaying(e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING),
+        onError: hideSound, // видео удалено или владелец запретил встраивание (101/150)
+      },
+    });
+  };
+  const s = document.createElement('script');
+  s.src = 'https://www.youtube.com/iframe_api';
+  s.onerror = hideSound;
+  document.head.appendChild(s);
+
+  return {
+    play: () => { wantPlay = true; if (player && player.playVideo) player.playVideo(); },
+    pause: () => { wantPlay = false; if (player && player.pauseVideo) player.pauseVideo(); setPlaying(false); },
+    isPaused: () => soundBtn.dataset.playing !== 'true',
+  };
+}
+
+function tryPlay() {
+  if (!userMuted) music.play();
+}
 soundBtn.addEventListener('click', e => {
   e.stopPropagation();
-  if (audio.paused) { userMuted = false; tryPlay(); }
-  else { userMuted = true; audio.pause(); setPlaying(false); }
+  if (music.isPaused()) { userMuted = false; music.play(); }
+  else { userMuted = true; music.pause(); }
 });
 ['pointerdown', 'touchstart', 'scroll'].forEach(ev => addEventListener(ev, tryPlay, { once: true, passive: true }));
 
