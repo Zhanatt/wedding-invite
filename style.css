@@ -222,8 +222,19 @@ img, svg { display: block; }
 .bird-bride.is-home .bird-crown { opacity: 0; }
 /* крыло машет вокруг плеча, как в анимации */
 .bird-wing { transform-box: view-box; transform-origin: 520px 350px; transition: transform .5s var(--ease-settle); }
-.bird.is-flying .bird-wing { animation: wing .38s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
-@keyframes wing { from { transform: rotate(28deg); } to { transform: rotate(-42deg); } }
+/* быстрый взмах: резкий удар вниз, подъём мягче; тело на ударе чуть подбрасывает вверх */
+.bird.is-flying .bird-wing { animation: wing .22s linear infinite; }
+.bird.is-flying svg { animation: lift .22s linear infinite; }
+@keyframes wing {
+  0%   { transform: rotate(34deg); animation-timing-function: cubic-bezier(.5, 0, .9, .6); }
+  38%  { transform: rotate(-48deg) scaleY(.9); animation-timing-function: cubic-bezier(.2, .4, .5, 1); }
+  100% { transform: rotate(34deg); }
+}
+@keyframes lift {
+  0%   { transform: translateY(1px); animation-timing-function: ease-out; }
+  45%  { transform: translateY(-3px); animation-timing-function: ease-in-out; }
+  100% { transform: translateY(1px); }
+}
 
 /* след: бежевый силуэт невесты на арке */
 .bird-trace { z-index: 4; opacity: 0; transition: opacity 1.4s ease; }
@@ -237,4 +248,4 @@ img, svg { display: block; }
 .perch-heart { position: absolute; left: 50%; top: -50px; width: 22px; height: 22px; margin-left: -11px; fill: var(--burgundy); opacity: 0; transform: translateY(8px) scale(.3); transition: opacity .6s ease .3s, transform .9s var(--ease-settle) .3s; }
 .perch-line.is-together .perch-heart { opacity: 1; transform: none; animation: beat 1.8s ease-in-out 1.2s infinite; }
 body.locked .bird-bride, body.locked .bird-trace { opacity: 0; }
-@media (prefers-reduced-motion: reduce) { .bird.is-flying .bird-wing, .bird-groom, .perch-line.is-together .perch-heart { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .bird.is-flying svg, .bird.is-flying .bird-wing, .bird-groom, .perch-line.is-together .perch-heart { animation: none; } }

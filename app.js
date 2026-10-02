@@ -328,8 +328,9 @@ soundBtn.addEventListener('click', e => {
     st.x += vx; st.y += vy;
     const settled = mode !== 'fly' && Math.hypot(tx - st.x, ty - st.y) < 1.5;
     if (settled) { st.x = tx; st.y = ty; }
-    const bob = settled ? 0 : Math.sin(t * 2.4) * 4;
-    st.rot += ((settled ? 0 : Math.max(-18, Math.min(24, vy * 1.6 - vx * .4))) - st.rot) * .12;
+    // лёгкое парение; корпус держится ровно, клюв чуть вверх — птица летит, а не падает
+    const bob = settled ? 0 : Math.sin(t * 2.4) * 2.5;
+    st.rot += ((settled ? 0 : Math.max(-10, Math.min(4, -5 - vy * .25 - Math.abs(vx) * .3))) - st.rot) * .1;
     const flip = !settled && vx < -1.2;
     bride.classList.toggle('is-flying', !settled);
     bride.classList.toggle('is-home', mode === 'home' && settled);
