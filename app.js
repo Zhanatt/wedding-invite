@@ -256,3 +256,91 @@ soundBtn.addEventListener('click', e => {
     }
   });
 })();
+
+/* ===== Птички: невеста вылетает из арки (остаётся бежевый след) и летит к жениху у таймера ===== */
+(function birds() {
+  const arch = document.querySelector('.arch');
+  const perchLine = document.querySelector('.perch-line');
+  if (!arch || !perchLine) return;
+
+  const flower = (x, y, c) => `<g class="bird-flower">${[0, 72, 144, 216, 288].map(a => {
+    const r = a * Math.PI / 180; return `<circle cx="${(x + Math.cos(r) * 2.3).toFixed(2)}" cy="${(y + Math.sin(r) * 2.3).toFixed(2)}" r="2" fill="${c}"/>`;
+  }).join('')}<circle cx="${x}" cy="${y}" r="1.3" fill="#d9a441"/></g>`;
+  const CROWN = `<g class="bird-crown">
+    <ellipse cx="67" cy="15.5" rx="3" ry="1.4" transform="rotate(-35 67 15.5)" fill="#6f8a5c"/>
+    <ellipse cx="80.5" cy="14.5" rx="3" ry="1.4" transform="rotate(30 80.5 14.5)" fill="#6f8a5c"/>
+    ${flower(63, 19, '#f2b8c6')}${flower(70, 13.5, '#fff5e1')}${flower(77.5, 12.5, '#f2b8c6')}${flower(84, 17.5, '#fff5e1')}
+  </g>`;
+  const BOW = `<g class="bird-bow"><path d="M73 33l6 4-6 4zM85 33l-6 4 6 4z" fill="#141414"/><circle cx="79" cy="37" r="1.8" fill="#141414"/></g>`;
+  const svg = extra => `<svg viewBox="0 0 100 80" aria-hidden="true">
+    <g class="bird-legs"><path d="M46 62l-2 10M55 62l0 10"/></g>
+    <path class="bird-body" d="M18 52C26 38 44 32 58 34 58 22 65 16 72 16c8 0 12 6 12 10l10-1-10 6c0 15-10 31-32 33-12 1-22-2-28-6L4 66l10-12z"/>
+    <circle class="bird-eye" cx="75" cy="23" r="1.7"/>
+    <path class="bird-wing" d="M50 42C42 26 32 15 14 9c7 12 12 26 22 36z"/>
+    ${extra}
+  </svg>`;
+  const FOOT_X = 24.5, FOOT_Y = 34.5; // точка лапок в px при ширине птицы 48px
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // жених уже сидит на орнаменте внизу
+  const groom = document.createElement('div');
+  groom.className = 'bird bird-groom is-landed';
+  groom.innerHTML = svg(BOW);
+  perchLine.appendChild(groom);
+
+  const bride = document.createElement('div');
+  bride.className = 'bird bird-bride';
+  bride.innerHTML = svg(CROWN);
+  document.body.appendChild(bride);
+  const trace = document.createElement('div');
+  trace.className = 'bird bird-trace';
+  trace.innerHTML = svg(CROWN);
+  document.body.appendChild(trace);
+
+  // позиция в документе без учёта transform (у блоков, появляющихся по скроллу, он временно сдвинут)
+  const docPos = el => { let x = 0, y = 0; for (let n = el; n; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; } return { x, y }; };
+  const page = document.querySelector('.page');
+  const st = { x: null, y: null, rot: 0 };
+
+  let raf = 0;
+  const t0 = performance.now();
+  function frame(now) {
+    raf = 0;
+    const t = (now - t0) / 1000;
+    const a = docPos(arch), r = arch.offsetWidth / 2;
+    const home = { x: a.x + r * 1.48, y: a.y + r * .45 };
+    trace.style.transform = `translate3d(${(home.x - FOOT_X).toFixed(1)}px, ${(home.y - FOOT_Y).toFixed(1)}px, 0)`;
+    const pl = docPos(perchLine), pw = perchLine.offsetWidth;
+    const land = { x: pl.x + pw * 20 / 120, y: pl.y + pw * 9 / 120 };
+    const pageW = page.offsetWidth, pageL = docPos(page).x, vh = innerHeight;
+
+    let tx, ty, mode;
+    if (scrollY <= 12 && !reduce) { tx = home.x; ty = home.y; mode = 'home'; }
+    else if (land.y <= scrollY + vh - 70 || scrollY >= document.documentElement.scrollHeight - vh - 4 || reduce) { tx = land.x; ty = land.y; mode = 'land'; }
+    else {
+      mode = 'fly';
+      ty = Math.min(land.y, Math.max(home.y, scrollY + vh * .42));
+      tx = pageL + pageW * .7 + Math.sin(t * .7) * pageW * .09; // плавно покачивается по правой стороне
+    }
+    if (st.x === null) { st.x = tx; st.y = ty; }
+    const k = reduce ? 1 : .05;
+    const vx = (tx - st.x) * k, vy = (ty - st.y) * k;
+    st.x += vx; st.y += vy;
+    const settled = mode !== 'fly' && Math.hypot(tx - st.x, ty - st.y) < 1.5;
+    if (settled) { st.x = tx; st.y = ty; }
+    const bob = settled ? 0 : Math.sin(t * 2.4) * 4;
+    st.rot += ((settled ? 0 : Math.max(-18, Math.min(24, vy * 1.6 - vx * .4))) - st.rot) * .12;
+    const flip = !settled && vx < -1.2;
+    bride.classList.toggle('is-flying', !settled);
+    bride.classList.toggle('is-home', mode === 'home' && settled);
+    bride.classList.toggle('is-landed', mode === 'land' && settled);
+    trace.classList.toggle('is-shown', !(mode === 'home' && settled));
+    perchLine.classList.toggle('is-together', mode === 'land' && settled);
+    bride.style.transform = `translate3d(${(st.x - FOOT_X).toFixed(1)}px, ${(st.y - FOOT_Y + bob).toFixed(1)}px, 0) rotate(${st.rot.toFixed(1)}deg) scaleX(${flip ? -1 : 1})`;
+    if (!settled) raf = requestAnimationFrame(frame);
+  }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  ['scroll', 'resize', 'orientationchange'].forEach(e => addEventListener(e, kick, { passive: true }));
+  document.fonts && document.fonts.ready.then(kick);
+  kick();
+})();
